@@ -1,0 +1,9 @@
+{
+  "input_dim": 784,
+  "output_dim": 10,
+  "num_hidden_layers": 3,
+  "neurons_per_layer": 88,
+  "dropout_rate": 0.3,
+  "normalization": "divide_by_255",
+  "final_test_accuracy": 0.883
+}
