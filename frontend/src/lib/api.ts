@@ -24,7 +24,7 @@ export const CLASS_NAMES = [
   "Ankle boot",
 ];
 
-const DEFAULT_API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000";
+const DEFAULT_API_URL = process.env.NEXT_PUBLIC_API_URL || "https://fashion-mnist-6tpf.onrender.com";
 
 export function getApiBaseUrl(): string {
   if (typeof window !== "undefined") {
