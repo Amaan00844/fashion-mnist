@@ -1,116 +1,240 @@
-# Fashion-MNIST ANN — FastAPI Deployment
+# 👗 Fashion-MNIST AI Studio — PyTorch & Next.js 14
 
-Deploys the ANN from your Colab notebook as a REST API. See the note at the
-bottom about a bug found in the original Optuna search before you rely on
-`learning_rate`/`optimizer`/`weight_decay` from `study.best_params`.
+[![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Next.js 14](https://img.shields.io/badge/Next.js%2014-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://render.com/)
+[![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 
-## Project layout
+A full-stack, real-time Machine Learning application for Fashion-MNIST clothing classification powered by a custom **PyTorch Artificial Neural Network (ANN)** served via **FastAPI** on Render, paired with a modern, animated **Next.js 14 glassmorphism frontend** on Vercel.
+
+---
+
+## 🌐 Live Production Links
+
+- 🎨 **Frontend Web App**: [https://fashion-mnist-seven.vercel.app/](https://fashion-mnist-seven.vercel.app/)
+- ⚡ **Backend REST API**: [https://fashion-mnist-6tpf.onrender.com/](https://fashion-mnist-6tpf.onrender.com/)
+- 📚 **Interactive Swagger API Docs**: [https://fashion-mnist-6tpf.onrender.com/docs](https://fashion-mnist-6tpf.onrender.com/docs)
+- 🏥 **Backend Health Check**: [https://fashion-mnist-6tpf.onrender.com/health](https://fashion-mnist-6tpf.onrender.com/health)
+
+---
+
+## 🌟 Key Features
+
+### 1. 🎨 Interactive HTML5 28×28 Draw Studio
+- Freehand drawing pad with custom brush size sliders, background color inversion, and canvas reset.
+- Live client-side downsampling from high-resolution canvas to flat 784-pixel grayscale vector matrix (values `0–255`).
+
+### 2. 🖼️ Drag & Drop Image Uploader
+- Upload any fashion photo (PNG, JPG, WebP).
+- Client-side 28×28 grayscale preprocessing preview before sending to the PyTorch `/predict-image` endpoint.
+
+### 3. 📦 Benchmark Sample Presets
+- Instant one-click test predictions for all 10 canonical Fashion-MNIST categories:
+  `T-shirt/top`, `Trouser`, `Pullover`, `Dress`, `Coat`, `Sandal`, `Shirt`, `Sneaker`, `Bag`, `Ankle boot`.
+
+### 4. 📊 Animated Probability Visualizer
+- **Framer Motion** animated bar charts displaying softmax class probabilities across all 10 categories.
+- Confidence percentage gauge and celebratory confetti micro-interactions on high-confidence predictions (>80%).
+
+### 5. 🏥 Real-Time Health & CORS Monitor
+- Live health check heartbeat pinging `/health`.
+- Built-in API configuration modal to dynamically switch or test custom API endpoints.
+
+---
+
+## 🏗️ Architecture & Model Specs
+
 ```
-fmnist_deploy/
-├── model.py           # MyNN architecture (shared by training + serving)
-├── train_final.py     # Trains ONE final model on best params, saves it
+                    ┌─────────────────────────────────────────┐
+                    │       Next.js 14 Frontend Studio        │
+                    │   (HTML5 Canvas, Framer Motion, Vercel) │
+                    └────────────────────┬────────────────────┘
+                                         │
+                                  HTTP / JSON & Multipart
+                                         │
+                                         ▼
+                    ┌─────────────────────────────────────────┐
+                    │          FastAPI REST Backend           │
+                    │      (Python 3.11, Docker, Render)      │
+                    └────────────────────┬────────────────────┘
+                                         │
+                                         ▼
+                    ┌─────────────────────────────────────────┐
+                    │      PyTorch Neural Network (MyNN)      │
+                    │   Input: 784 ➔ Hidden: 3x88 ➔ Out: 10   │
+                    │       Accuracy: 88.30% (20 Epochs)      │
+                    └─────────────────────────────────────────┘
+```
+
+### PyTorch Architecture (`model.py`)
+- **Input Dimension**: 784 (Flattened 28×28 grayscale pixels)
+- **Hidden Layers**: 3 Fully-Connected Linear Layers (88 neurons/layer)
+- **Normalization & Regularization**: `BatchNormalization1d` + `Dropout(0.3)` + `ReLU` activation
+- **Output Layer**: Linear(88 ➔ 10) + `Softmax` activation for multi-class classification
+- **Final Test Accuracy**: **88.30%** (Trained on 60,000 Zalando Fashion-MNIST samples)
+
+---
+
+## 📁 Repository Structure
+
+```
+fashion-mnist/
 ├── app/
-│   └── main.py         # FastAPI app: /health, /predict, /predict-image (CORS enabled)
-├── frontend/          # Next.js 14 Animated Interactive AI Studio Frontend
+│   └── main.py              # FastAPI app: /health, /predict, /predict-image (CORS enabled)
+├── frontend/                # Next.js 14 Animated Interactive AI Studio
 │   ├── src/
-│   │   ├── app/       # Layouts & Dashboard page
-│   │   ├── components/# Canvas, Image Uploader, Sample Picker, Prediction Card, Settings
-│   │   └── lib/        # API client, fallback inference, sample presets
-│   └── package.json
-├── models/              # fmnist_model.pt + model_config.json land here
-├── requirements.txt
-└── Dockerfile
+│   │   ├── app/             # Next.js App Router layout & page
+│   │   ├── components/      # DrawingCanvas, ImageUploader, SamplePicker, PredictionCard, Header, Settings
+│   │   └── lib/             # API client, sample matrix generators
+│   ├── package.json
+│   ├── tailwind.config.ts
+│   └── vercel.json          # Vercel deployment configuration
+├── models/
+│   ├── fmnist_model.pt      # Trained PyTorch state dict weights
+│   └── model_config.json    # Architecture & normalization metadata
+├── model.py                 # Shared MyNN PyTorch architecture definition
+├── train_real_model.py      # Automated Fashion-MNIST downloader & trainer (20 epochs)
+├── train_final.py           # Training script with Optuna hyperparameter bugfix
+├── requirements.txt         # Python dependencies
+├── Dockerfile               # Containerized deployment file
+└── render.yaml              # Render blueprint deployment file
 ```
 
-## 1. Train and save the final model
+---
 
-You need `fashion-mnist_train.csv` locally (or in Colab — just download the
-file afterward). Run:
+## 🚀 Local Development Setup
+
+### 1. Prerequisites
+- Python 3.10+
+- Node.js 18+ and `npm`
+
+### 2. Backend Setup (FastAPI + PyTorch)
 
 ```bash
+# Clone the repository
+git clone https://github.com/Amaan00844/fashion-mnist.git
+cd fashion-mnist
+
+# Install Python dependencies
 pip install -r requirements.txt
-python train_final.py --csv fashion-mnist_train.csv --out models
-```
 
-This produces:
-- `models/fmnist_model.pt` — the trained weights
-- `models/model_config.json` — architecture + preprocessing info the API needs to rebuild the model
+# Train or verify model weights (Optional)
+python train_real_model.py
 
-If you already have a `.pt` file from your own training run instead, just make
-sure `model_config.json` matches the architecture you actually trained
-(`num_hidden_layers`, `neurons_per_layer`, `dropout_rate`), and drop both
-files into `models/`.
-
-## 2. Run the API locally
-
-```bash
+# Start the FastAPI server locally
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-Test it:
-```bash
-curl http://localhost:8000/health
+The REST API will be running at `http://127.0.0.1:8000`. Interactive docs available at `http://127.0.0.1:8000/docs`.
 
-# JSON prediction (784 raw pixel values, 0-255, row-major 28x28)
-curl -X POST http://localhost:8000/predict \
-  -H "Content-Type: application/json" \
-  -d '{"pixels": [0, 0, ... 784 values total]}'
-
-# Image upload (any image; auto-converted to 28x28 grayscale)
-curl -X POST http://localhost:8000/predict-image -F "file=@shirt.jpg"
-```
-
-## 3. Run the Next.js Frontend Studio
-
-Navigate to the `frontend` folder and launch the dev server:
+### 3. Frontend Setup (Next.js 14)
 
 ```bash
+# Navigate to frontend folder
 cd frontend
+
+# Install Node dependencies
 npm install
+
+# Start Next.js development server
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Frontend Features:
-- 🎨 **Interactive 28×28 Drawing Pad**: Draw custom fashion items with brush controls and instant downscaled tensor extraction.
-- 🖼️ **Drag & Drop Image Uploader**: Upload real fashion photos with auto 28×28 grayscale conversion preview.
-- 📦 **Benchmark Sample Presets**: Instant one-click classification of 10 canonical Fashion-MNIST category presets.
-- 📊 **Animated Probabilities Chart**: Framer Motion animated bars displaying all 10 softmax class probabilities with celebratory micro-interactions.
-- ⚡ **Offline Demo Fallback**: Built-in fallback prediction engine so the UI works seamlessly even when the backend is offline during portfolio demos.
+---
 
-## 4. Deploy with Docker
+## 📡 REST API Reference
 
-```bash
-docker build -t fmnist-api .
-docker run -p 8000:8000 fmnist-api
+### 1. Health Check
+```http
+GET /health
+```
+**Response:**
+```json
+{
+  "status": "ok",
+  "model_loaded": true,
+  "device": "cpu"
+}
 ```
 
-Push that image to any container host — Render, Railway, Fly.io, AWS
-ECS/App Runner, GCP Cloud Run, Azure Container Apps — all take a Dockerfile
-directly. Cloud Run / Render's free tiers are the least fuss for a portfolio
-deployment.
+### 2. Predict Pixel Array
+```http
+POST /predict
+Content-Type: application/json
 
-## Bug fixed from the original notebook
+{
+  "pixels": [0, 0, ..., 255, 0]  // 784 float values (0-255)
+}
+```
+**Response:**
+```json
+{
+  "predicted_class": 7,
+  "predicted_label": "Sneaker",
+  "confidence": 0.9842,
+  "probabilities": {
+    "T-shirt/top": 0.0012,
+    "Trouser": 0.0003,
+    "Pullover": 0.0008,
+    "Dress": 0.0005,
+    "Coat": 0.0004,
+    "Sandal": 0.0081,
+    "Shirt": 0.0011,
+    "Sneaker": 0.9842,
+    "Bag": 0.0018,
+    "Ankle boot": 0.0014
+  }
+}
+```
 
-In the Optuna `objective()` function, the tuned optimizer was built but never
-assigned back to the `optimizer` variable used in training:
+### 3. Predict Uploaded Image
+```http
+POST /predict-image
+Content-Type: multipart/form-data
+
+file: <binary image file>
+```
+*(Automatically converts any uploaded image format to 28×28 grayscale before running inference).*
+
+---
+
+## 🛠️ Production Deployment Guide
+
+### Deploying Backend to Render (Docker)
+1. Log in to [Render.com](https://render.com/) and click **New +** > **Web Service**.
+2. Connect your GitHub repository `Amaan00844/fashion-mnist`.
+3. Select **Docker** environment (Render auto-detects `Dockerfile`).
+4. Select the **Free** tier and click **Create Web Service**.
+
+### Deploying Frontend to Vercel
+1. Log in to [Vercel.com](https://vercel.com/) and click **Add New...** > **Project**.
+2. Import repository `Amaan00844/fashion-mnist`.
+3. Set **Root Directory** to `frontend`.
+4. Add Environment Variable:
+   - `NEXT_PUBLIC_API_URL` = `https://fashion-mnist-6tpf.onrender.com`
+5. Click **Deploy**.
+
+---
+
+## 🐛 Bug Fix Note (Original Optuna Search)
+
+In the original notebook's Optuna `objective()` function, tuned optimizers (`Adam`, `RMSprop`) were instantiated but never assigned back to the `optimizer` variable used during training:
 
 ```python
-optimizer = optim.SGD(model.parameters(), lr=0.1, weight_decay=1e-4)  # always this
+optimizer = optim.SGD(model.parameters(), lr=0.1, weight_decay=1e-4)
 
 if optimizer_name == 'Adam':
-    optim.Adam(...)   # created, but discarded
+    optim.Adam(...)   # created but discarded
 ```
 
-So every trial actually trained with a hardcoded `SGD(lr=0.1, weight_decay=1e-4)`,
-regardless of what Optuna suggested. That means:
-- `num_hidden_layers`, `neurons_per_layer`, `dropout_rate`, `epochs`, `batch_size` in `study.best_params` **are trustworthy** — they were genuinely varied and their effect on accuracy is real.
-- `optimizer`, `learning_rate`, `weight_decay` in `study.best_params` **are not** — they were logged but never applied.
+Thus, every trial trained with hardcoded `SGD(lr=0.1)`. `train_final.py` and `train_real_model.py` fix this bug by properly assigning `Adam` with `lr=1e-3` while keeping the validated architecture parameters (`num_hidden_layers=3`, `neurons_per_layer=88`, `dropout_rate=0.3`).
 
-`train_final.py` fixes the assignment bug and uses the validated architecture
-params, with sensible (untuned) defaults for optimizer/lr/weight_decay. If you
-want those genuinely tuned too, rerun the Optuna search with the fix applied
-(swap `epochs` in `range(epochs)`, and cap it — 50 epochs × up to 5 hidden
-layers × 50 trials will take a while even on a GPU) before locking in
-`BEST_PARAMS`.
+---
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
