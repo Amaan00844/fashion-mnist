@@ -241,9 +241,14 @@ export default function Home() {
               </p>
             </div>
           </div>
-        </div>
-
-      </main>
+      {/* Footer Credit */}
+      <footer className="w-full text-center py-6 text-xs text-slate-400 border-t border-slate-800/60 mt-12">
+        <p className="flex items-center justify-center gap-1.5 font-medium">
+          <span>Fashion-MNIST AI Studio</span>
+          <span>•</span>
+          <span>Developed & Deployed by <strong className="text-gradient">Amaan Chauhan</strong></span>
+        </p>
+      </footer>
 
       {/* Settings Modal */}
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />

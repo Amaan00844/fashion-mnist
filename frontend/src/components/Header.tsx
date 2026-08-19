@@ -46,7 +46,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenSettings }) => {
               </span>
             </div>
             <p className="text-xs text-slate-400 hidden sm:block">
-              Neural Network Inference & Real-Time Visualization Platform
+              Developed & Deployed by <span className="text-brand-300 font-semibold">Amaan Chauhan</span>
             </p>
           </div>
         </div>

@@ -5,7 +5,9 @@
 [![Next.js 14](https://img.shields.io/badge/Next.js%2014-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://render.com/)
-[![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
+[![Developer](https.img.shields.io/badge/Developer-Amaan%20Chauhan-6366F1?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Amaan00844)
+
+> 🚀 **Developed & Deployed by Amaan Chauhan**
 
 A full-stack, real-time Machine Learning application for Fashion-MNIST clothing classification powered by a custom **PyTorch Artificial Neural Network (ANN)** served via **FastAPI** on Render, paired with a modern, animated **Next.js 14 glassmorphism frontend** on Vercel.
 
