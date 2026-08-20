@@ -3,123 +3,61 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --bg-main: #0a0a0f;
-    --surface: rgba(18, 18, 26, 0.8);
-    --border: rgba(255, 255, 255, 0.06);
-    --neon-lime: #a3e635;
-    --neon-cyan: #22d3ee;
-    --neon-magenta: #e879f9;
-  }
-
   body {
-    background-color: var(--bg-main);
-    color: #f0f0f5;
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    overflow-x: hidden;
-    min-height: 100vh;
+    background-color: theme('colors.claude.bg');
+    color: theme('colors.claude.text');
+    font-family: theme('fontFamily.sans');
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
-/* Pitch-black grid pattern */
-.bg-grid-pattern {
-  background-size: 60px 60px;
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+.minimal-panel {
+  background-color: theme('colors.claude.surface');
+  border: 1px solid theme('colors.claude.border');
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-/* Glassmorphism panels */
-.glass-panel {
-  background: rgba(18, 18, 26, 0.6);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+.minimal-panel-interactive:hover {
+  border-color: #d4d2cb;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
 }
 
-.glass-panel-interactive {
-  background: rgba(18, 18, 26, 0.6);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+.btn-primary {
+  background-color: theme('colors.claude.text');
+  color: #ffffff;
+  transition: background-color 0.2s ease;
+}
+.btn-primary:hover {
+  background-color: #000000;
+}
+.btn-secondary {
+  background-color: theme('colors.claude.surface');
+  color: theme('colors.claude.text');
+  border: 1px solid theme('colors.claude.border');
+  transition: background-color 0.2s ease;
+}
+.btn-secondary:hover {
+  background-color: #f9f8f6;
 }
 
-.glass-panel-interactive:hover {
-  border-color: rgba(163, 230, 53, 0.35);
-  transform: translateY(-3px);
-  box-shadow:
-    0 12px 40px rgba(163, 230, 53, 0.1),
-    0 0 20px rgba(163, 230, 53, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-}
-
-/* Neon gradient text */
-.text-gradient {
-  background: linear-gradient(135deg, #a3e635 0%, #22d3ee 50%, #e879f9 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.text-gradient-cyan {
-  background: linear-gradient(135deg, #22d3ee 0%, #e879f9 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Neon glow button */
-.btn-neon {
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-neon::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  background: linear-gradient(135deg, #a3e635, #22d3ee, #e879f9);
-  border-radius: inherit;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.btn-neon:hover::before {
-  opacity: 1;
-}
-
-/* Scanning line effect */
-.scan-line::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(transparent, rgba(163, 230, 53, 0.03), transparent);
-  animation: scan 3s linear infinite;
-  pointer-events: none;
-}
-
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(10, 10, 15, 0.8);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(163, 230, 53, 0.3);
-  border-radius: 3px;
+  background: #d4d2cb;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(163, 230, 53, 0.6);
+  background: #bab8b1;
 }
 
-/* Image rendering for pixelated previews */
 .image-rendering-pixelated {
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;

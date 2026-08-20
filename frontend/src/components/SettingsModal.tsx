@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, Check, Server, RefreshCw, Terminal } from "lucide-react";
+import { X, Check } from "lucide-react";
 import { getApiBaseUrl, setApiBaseUrl, checkHealth, HealthResponse } from "@/lib/api";
 
 interface SettingsModalProps {
@@ -30,34 +30,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md">
-      <div className="w-full max-w-lg glass-panel rounded-2xl p-6 sm:p-8 border border-white/[0.08] shadow-2xl relative">
-
-        {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/[0.06]">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/20">
-              <Server className="w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-frost-white font-heading">API Connection</h3>
-              <p className="text-xs text-frost-muted">Configure FastAPI inference backend</p>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-xl bg-surface-700 hover:bg-surface-600 text-frost-muted hover:text-frost-white transition-colors"
-          >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm">
+      <div className="w-full max-w-md minimal-panel p-6 sm:p-8 animate-in fade-in zoom-in-95 duration-200">
+        
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-serif font-medium text-claude-text">Settings</h3>
+          <button onClick={onClose} className="p-1 text-claude-muted hover:text-claude-text rounded-md hover:bg-black/5">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Form Body */}
-        <div className="py-6 space-y-5">
-
+        <div className="space-y-6">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-frost-gray mb-2 font-heading">
-              FastAPI Server Base URL
+            <label className="block text-sm font-medium text-claude-text mb-2">
+              API Base URL
             </label>
             <div className="flex gap-2">
               <input
@@ -65,69 +51,34 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                 value={apiUrl}
                 onChange={(e) => setUrl(e.target.value)}
                 placeholder="http://localhost:8000"
-                className="flex-1 px-4 py-2.5 rounded-xl bg-surface-800 border border-white/[0.06] text-frost-white text-sm font-mono focus:outline-none focus:border-neon-lime/40 transition-colors"
+                className="flex-1 px-3 py-2 rounded-lg bg-claude-bg border border-claude-border text-sm focus:outline-none focus:border-claude-text focus:ring-1 focus:ring-claude-text transition-shadow"
               />
               <button
                 onClick={handleTest}
                 disabled={testing}
-                className="px-4 py-2.5 rounded-xl bg-surface-700 hover:bg-surface-600 text-frost-gray text-xs font-semibold border border-white/[0.06] flex items-center gap-2 transition-all hover:border-neon-cyan/20"
+                className="btn-secondary px-4 py-2 rounded-lg text-sm font-medium"
               >
-                {testing ? <RefreshCw className="w-4 h-4 animate-spin" /> : "Test"}
+                {testing ? "..." : "Test"}
               </button>
             </div>
           </div>
 
-          {/* Test Result */}
           {testResult && (
-            <div
-              className={`p-4 rounded-xl border text-xs flex items-center gap-3 ${
-                testResult.ok
-                  ? "bg-neon-lime/5 border-neon-lime/20 text-neon-lime"
-                  : "bg-red-500/5 border-red-500/20 text-red-400"
-              }`}
-            >
-              <div className="font-semibold">
-                {testResult.ok ? (
-                  <>
-                    ✅ Connected — Device: <span className="font-mono">{testResult.data?.device}</span> (Model: {String(testResult.data?.model_loaded)})
-                  </>
-                ) : (
-                  <>⚠️ Offline — {testResult.error}</>
-                )}
-              </div>
+            <div className={`p-3 rounded-lg text-sm border ${testResult.ok ? 'bg-emerald-50 border-emerald-100 text-emerald-800' : 'bg-red-50 border-red-100 text-red-800'}`}>
+              {testResult.ok ? `Connected to ${testResult.data?.device}` : testResult.error}
             </div>
           )}
-
-          {/* Quick Command */}
-          <div className="bg-surface-800/90 rounded-xl p-4 border border-white/[0.04] space-y-3">
-            <h4 className="text-xs font-bold text-frost-gray flex items-center gap-2 font-heading">
-              <Terminal className="w-4 h-4 text-neon-lime" />
-              Start FastAPI Locally
-            </h4>
-            <div className="bg-black/60 p-3 rounded-lg border border-white/[0.04] text-[11px] font-mono text-neon-lime select-all overflow-x-auto">
-              uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-            </div>
-          </div>
-
         </div>
 
-        {/* Footer */}
-        <div className="pt-4 border-t border-white/[0.06] flex items-center justify-end gap-3">
-          <button
-            onClick={onClose}
-            className="px-4 py-2.5 rounded-xl text-frost-muted hover:text-frost-white text-xs font-semibold transition-colors"
-          >
+        <div className="mt-8 flex justify-end gap-3">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg text-sm font-medium text-claude-muted hover:text-claude-text">
             Cancel
           </button>
-          <button
-            onClick={handleSave}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-neon-lime to-neon-cyan text-surface-900 text-xs font-bold shadow-lg hover:shadow-neon-lime/20 transition-all flex items-center gap-1.5"
-          >
+          <button onClick={handleSave} className="btn-primary px-5 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
             <Check className="w-4 h-4" />
-            Save Settings
+            Save
           </button>
         </div>
-
       </div>
     </div>
   );
