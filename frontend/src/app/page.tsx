@@ -241,6 +241,10 @@ export default function Home() {
               </p>
             </div>
           </div>
+        </div>
+
+      </main>
+
       {/* Footer Credit */}
       <footer className="w-full text-center py-6 text-xs text-slate-400 border-t border-slate-800/60 mt-12">
         <p className="flex items-center justify-center gap-1.5 font-medium">
