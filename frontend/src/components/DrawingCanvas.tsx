@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { Paintbrush, Eraser, RotateCcw, Zap, Eye, Sparkles } from "lucide-react";
+import { Paintbrush, RotateCcw, Zap } from "lucide-react";
 
 interface DrawingCanvasProps {
   onPredict: (pixels: number[]) => void;
@@ -39,18 +39,14 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ onPredict, isLoadi
     const canvas = canvasRef.current;
     if (!canvas) return new Array(784).fill(0);
 
-    // Temp 28x28 offscreen canvas
     const tempCanvas = document.createElement("canvas");
     tempCanvas.width = 28;
     tempCanvas.height = 28;
     const tempCtx = tempCanvas.getContext("2d");
     if (!tempCtx) return new Array(784).fill(0);
 
-    // Fill background
     tempCtx.fillStyle = isInverted ? "white" : "black";
     tempCtx.fillRect(0, 0, 28, 28);
-
-    // Downscale full resolution drawing
     tempCtx.drawImage(canvas, 0, 0, 28, 28);
 
     const imgData = tempCtx.getImageData(0, 0, 28, 28);
@@ -62,7 +58,7 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ onPredict, isLoadi
       const b = imgData.data[i + 2];
       let gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
       if (isInverted) {
-        gray = 255 - gray; // Flip if background was white
+        gray = 255 - gray;
       }
       pixels.push(gray);
     }
@@ -80,7 +76,6 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ onPredict, isLoadi
     pCtx.drawImage(mainCanvas, 0, 0, 28, 28);
   };
 
-  // Drawing event handlers
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
     setIsDrawing(true);
     setHasContent(true);
@@ -138,12 +133,12 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ onPredict, isLoadi
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full">
-      {/* Canvas container with neon border */}
+    <div className="flex flex-col items-center gap-5 w-full">
+      {/* Canvas with neon glow border */}
       <div className="relative group">
-        <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-brand-500 via-accent-violet to-accent-pink opacity-30 group-hover:opacity-60 blur transition duration-500" />
-        
-        <div className="relative bg-slate-900 rounded-2xl p-4 border border-slate-800 shadow-2xl flex flex-col items-center">
+        <div className="absolute -inset-[2px] rounded-2xl bg-gradient-to-r from-neon-lime via-neon-cyan to-neon-magenta opacity-20 group-hover:opacity-50 blur-sm transition duration-500" />
+
+        <div className="relative bg-surface-800 rounded-2xl p-3 border border-white/[0.06] shadow-2xl flex flex-col items-center">
           <canvas
             ref={canvasRef}
             width={280}
@@ -155,69 +150,66 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({ onPredict, isLoadi
             onTouchStart={startDrawing}
             onTouchEnd={stopDrawing}
             onTouchMove={draw}
-            className="w-full max-w-[280px] h-[280px] rounded-xl cursor-crosshair touch-none bg-black border border-slate-800 shadow-inner"
+            className="w-full max-w-[280px] h-[280px] rounded-xl cursor-crosshair touch-none bg-black border border-white/[0.04] shadow-inner"
           />
 
-          {/* 28x28 Micro Preview Badge */}
-          <div className="absolute bottom-6 right-6 bg-slate-950/90 border border-slate-700/80 rounded-xl p-2 flex items-center gap-2 shadow-xl backdrop-blur-md">
+          {/* 28x28 Micro Preview */}
+          <div className="absolute bottom-5 right-5 bg-surface-900/95 border border-neon-lime/20 rounded-xl p-2 flex items-center gap-2 shadow-xl backdrop-blur-md">
             <div className="flex flex-col">
-              <span className="text-[10px] uppercase font-bold text-slate-400">Model Input</span>
-              <span className="text-[9px] text-brand-400 font-mono">28 × 28 px</span>
+              <span className="text-[9px] uppercase font-bold text-frost-muted tracking-wider">Input</span>
+              <span className="text-[8px] text-neon-lime font-mono">28×28</span>
             </div>
             <canvas
               ref={previewRef}
               width={28}
               height={28}
-              className="w-10 h-10 rounded border border-slate-700 bg-black image-rendering-pixelated"
+              className="w-9 h-9 rounded border border-white/[0.08] bg-black image-rendering-pixelated"
             />
           </div>
         </div>
       </div>
 
       {/* Control Toolbar */}
-      <div className="w-full max-w-[340px] bg-slate-900/90 border border-slate-800 rounded-2xl p-3 flex items-center justify-between gap-3 shadow-lg">
-        
-        {/* Brush Size Slider */}
+      <div className="w-full max-w-[340px] glass-panel rounded-xl p-3 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 flex-1 px-2">
-          <Paintbrush className="w-4 h-4 text-slate-400" />
+          <Paintbrush className="w-3.5 h-3.5 text-frost-muted" />
           <input
             type="range"
             min={10}
             max={32}
             value={brushSize}
             onChange={(e) => setBrushSize(Number(e.target.value))}
-            className="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-brand-500"
+            className="w-full h-1 bg-surface-600 rounded-lg appearance-none cursor-pointer accent-neon-lime"
           />
         </div>
 
-        {/* Clear Button */}
         <button
           onClick={initCanvas}
-          className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+          className="p-2 rounded-lg bg-surface-700 hover:bg-surface-600 text-frost-muted hover:text-frost-white transition-colors border border-white/[0.04]"
           title="Clear canvas"
         >
-          <RotateCcw className="w-4 h-4" />
+          <RotateCcw className="w-3.5 h-3.5" />
         </button>
       </div>
 
-      {/* Action Button */}
+      {/* Classify Button */}
       <button
         onClick={handlePredict}
         disabled={isLoading || !hasContent}
-        className={`w-full max-w-[340px] py-3.5 px-6 rounded-xl font-bold text-sm tracking-wide shadow-lg flex items-center justify-center gap-2 transition-all ${
+        className={`w-full max-w-[340px] py-3 px-6 rounded-xl font-bold text-sm tracking-wide shadow-lg flex items-center justify-center gap-2 transition-all font-heading ${
           hasContent && !isLoading
-            ? "bg-gradient-to-r from-brand-600 via-brand-500 to-accent-violet text-white hover:shadow-brand-500/25 hover:scale-[1.02] active:scale-[0.98]"
-            : "bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700/50"
+            ? "bg-gradient-to-r from-neon-lime to-neon-cyan text-surface-900 hover:shadow-neon-lime/25 hover:scale-[1.02] active:scale-[0.98]"
+            : "bg-surface-700 text-frost-muted cursor-not-allowed border border-white/[0.04]"
         }`}
       >
         {isLoading ? (
           <>
-            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            <span>Classifying Fashion Item...</span>
+            <div className="w-4 h-4 border-2 border-surface-900/30 border-t-surface-900 rounded-full animate-spin" />
+            <span>Classifying…</span>
           </>
         ) : (
           <>
-            <Zap className="w-4 h-4 fill-current text-amber-300" />
+            <Zap className="w-4 h-4" />
             <span>Classify Drawing</span>
           </>
         )}

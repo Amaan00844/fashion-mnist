@@ -6,11 +6,9 @@ import confetti from "canvas-confetti";
 import { PredictionResponse, CLASS_NAMES } from "@/lib/api";
 import {
   Award,
-  CheckCircle2,
   TrendingUp,
   BarChart3,
   Sparkles,
-  Info,
   ShieldCheck,
 } from "lucide-react";
 
@@ -19,46 +17,44 @@ interface PredictionCardProps {
   isLoading: boolean;
 }
 
-// Map class names to visual theme colors
-const CLASS_COLORS: Record<string, string> = {
-  "T-shirt/top": "from-indigo-500 to-blue-500",
-  Trouser: "from-cyan-500 to-teal-500",
-  Pullover: "from-purple-500 to-indigo-500",
-  Dress: "from-pink-500 to-rose-500",
-  Coat: "from-amber-500 to-orange-500",
-  Sandal: "from-emerald-500 to-green-500",
-  Shirt: "from-sky-500 to-indigo-500",
-  Sneaker: "from-yellow-500 to-amber-500",
-  Bag: "from-violet-500 to-fuchsia-500",
-  "Ankle boot": "from-rose-500 to-red-500",
+const CLASS_COLORS: Record<string, { gradient: string; glow: string }> = {
+  "T-shirt/top": { gradient: "from-neon-lime to-emerald-400", glow: "shadow-neon-lime/20" },
+  Trouser: { gradient: "from-neon-cyan to-sky-400", glow: "shadow-neon-cyan/20" },
+  Pullover: { gradient: "from-violet-400 to-neon-magenta", glow: "shadow-neon-magenta/20" },
+  Dress: { gradient: "from-pink-400 to-rose-400", glow: "shadow-pink-400/20" },
+  Coat: { gradient: "from-amber-400 to-orange-400", glow: "shadow-amber-400/20" },
+  Sandal: { gradient: "from-neon-lime to-teal-400", glow: "shadow-neon-lime/20" },
+  Shirt: { gradient: "from-sky-400 to-neon-cyan", glow: "shadow-neon-cyan/20" },
+  Sneaker: { gradient: "from-yellow-400 to-neon-lime", glow: "shadow-yellow-400/20" },
+  Bag: { gradient: "from-neon-magenta to-purple-400", glow: "shadow-neon-magenta/20" },
+  "Ankle boot": { gradient: "from-rose-400 to-red-400", glow: "shadow-rose-400/20" },
 };
 
 export const PredictionCard: React.FC<PredictionCardProps> = ({ prediction, isLoading }) => {
-  // Fire celebratory confetti when high confidence prediction arrives
   useEffect(() => {
     if (prediction && prediction.confidence > 0.7) {
       confetti({
         particleCount: 40,
         spread: 60,
         origin: { y: 0.6 },
-        colors: ["#6366f1", "#ec4899", "#06b6d4", "#10b981"],
+        colors: ["#a3e635", "#22d3ee", "#e879f9"],
       });
     }
   }, [prediction]);
 
   if (isLoading) {
     return (
-      <div className="w-full glass-panel rounded-3xl p-8 border border-slate-800/80 flex flex-col items-center justify-center min-h-[380px] shadow-2xl relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-500/5 via-accent-violet/5 to-accent-pink/5 animate-pulse-slow" />
-        
+      <div className="w-full glass-panel rounded-2xl p-8 border border-white/[0.06] flex flex-col items-center justify-center min-h-[380px] shadow-2xl relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-neon-lime/[0.02] via-neon-cyan/[0.02] to-neon-magenta/[0.02] animate-pulse-slow" />
+
         <div className="relative z-10 flex flex-col items-center gap-4">
           <div className="relative w-16 h-16 flex items-center justify-center">
-            <div className="absolute inset-0 rounded-full border-4 border-brand-500/20 border-t-brand-500 animate-spin" />
-            <Sparkles className="w-6 h-6 text-brand-400 animate-pulse" />
+            <div className="absolute inset-0 rounded-full border-[3px] border-neon-lime/20 border-t-neon-lime animate-spin" />
+            <Sparkles className="w-6 h-6 text-neon-lime animate-pulse" />
           </div>
           <div className="text-center">
-            <h3 className="text-base font-bold text-slate-200">Evaluating Neural Activations</h3>
-            <p className="text-xs text-slate-400 mt-1">Passing 784 pixel tensor through feedforward ANN layers...</p>
+            <h3 className="text-base font-bold text-frost-white font-heading">Running Neural Inference</h3>
+            <p className="text-xs text-frost-muted mt-1">784-dim tensor → feedforward ANN → softmax</p>
           </div>
         </div>
       </div>
@@ -67,22 +63,21 @@ export const PredictionCard: React.FC<PredictionCardProps> = ({ prediction, isLo
 
   if (!prediction) {
     return (
-      <div className="w-full glass-panel rounded-3xl p-8 border border-slate-800/80 flex flex-col items-center justify-center min-h-[380px] text-center shadow-xl">
-        <div className="w-14 h-14 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 mb-4 shadow-inner">
+      <div className="w-full glass-panel rounded-2xl p-8 border border-white/[0.06] flex flex-col items-center justify-center min-h-[380px] text-center shadow-xl">
+        <div className="w-14 h-14 rounded-2xl bg-surface-700 border border-white/[0.06] flex items-center justify-center text-frost-muted mb-4">
           <BarChart3 className="w-7 h-7" />
         </div>
-        <h3 className="text-base font-bold text-slate-300">Awaiting Input Pattern</h3>
-        <p className="text-xs text-slate-400 max-w-sm mt-1">
-          Draw an item on the canvas, upload an image file, or choose a benchmark preset to generate live predictions.
+        <h3 className="text-base font-bold text-frost-gray font-heading">Awaiting Input</h3>
+        <p className="text-xs text-frost-muted max-w-sm mt-1">
+          Draw, upload a photo, or pick a sample to generate live predictions.
         </p>
       </div>
     );
   }
 
   const confidencePct = (prediction.confidence * 100).toFixed(1);
-  const colorGradient = CLASS_COLORS[prediction.predicted_label] || "from-brand-500 to-accent-violet";
+  const classStyle = CLASS_COLORS[prediction.predicted_label] || { gradient: "from-neon-lime to-neon-cyan", glow: "shadow-neon-lime/20" };
 
-  // Sort probabilities for ranking
   const sortedProbs = Object.entries(prediction.probabilities).sort((a, b) => b[1] - a[1]);
 
   return (
@@ -90,44 +85,41 @@ export const PredictionCard: React.FC<PredictionCardProps> = ({ prediction, isLo
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="w-full glass-panel rounded-3xl p-6 sm:p-8 border border-slate-800/80 shadow-2xl flex flex-col gap-6"
+      className="w-full glass-panel rounded-2xl p-6 sm:p-8 border border-white/[0.06] shadow-2xl flex flex-col gap-6"
     >
-      
-      {/* Top Winner Card */}
-      <div className="relative rounded-2xl bg-gradient-to-r from-slate-900/90 to-slate-950 p-6 border border-slate-800/90 shadow-xl overflow-hidden">
-        {/* Ambient glow accent */}
-        <div className={`absolute top-0 right-0 w-48 h-48 bg-gradient-to-br ${colorGradient} opacity-15 rounded-full blur-2xl pointer-events-none`} />
+
+      {/* Winner Card */}
+      <div className={`relative rounded-xl bg-surface-800/80 p-6 border border-white/[0.06] shadow-xl overflow-hidden ${classStyle.glow}`}>
+        <div className={`absolute top-0 right-0 w-48 h-48 bg-gradient-to-br ${classStyle.gradient} opacity-[0.08] rounded-full blur-3xl pointer-events-none`} />
 
         <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          
+
           <div className="flex items-center gap-4">
-            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-tr ${colorGradient} p-[1px] shadow-lg`}>
-              <div className="w-full h-full bg-slate-950 rounded-[15px] flex items-center justify-center">
+            <div className={`w-14 h-14 rounded-2xl bg-gradient-to-tr ${classStyle.gradient} p-[1.5px]`}>
+              <div className="w-full h-full bg-surface-900 rounded-[14px] flex items-center justify-center">
                 <Award className="w-7 h-7 text-white" />
               </div>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20">
-                  Predicted Category
+                <span className="text-[9px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full bg-neon-lime/10 text-neon-lime border border-neon-lime/20 font-heading">
+                  Predicted
                 </span>
-                <span className="text-[10px] font-mono text-slate-400">
+                <span className="text-[10px] font-mono text-frost-muted">
                   Class #{prediction.predicted_class}
                 </span>
               </div>
-              <h2 className="text-2xl font-black text-white mt-1 font-['Outfit']">
+              <h2 className="text-2xl font-bold text-frost-white mt-1 font-heading">
                 {prediction.predicted_label}
               </h2>
             </div>
           </div>
 
-          {/* Confidence Badge */}
+          {/* Confidence */}
           <div className="flex flex-col items-start sm:items-end">
-            <span className="text-xs text-slate-400 font-medium">Confidence Score</span>
-            <div className="flex items-baseline gap-1 mt-0.5">
-              <span className="text-3xl font-extrabold text-white font-['Outfit']">{confidencePct}%</span>
-            </div>
-            <div className="flex items-center gap-1 text-[10px] text-emerald-400 font-semibold mt-0.5">
+            <span className="text-xs text-frost-muted font-medium">Confidence</span>
+            <span className="text-3xl font-bold text-frost-white font-heading mt-0.5">{confidencePct}%</span>
+            <div className="flex items-center gap-1 text-[10px] text-neon-lime font-semibold mt-0.5">
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>High Certainty</span>
             </div>
@@ -136,42 +128,43 @@ export const PredictionCard: React.FC<PredictionCardProps> = ({ prediction, isLo
         </div>
       </div>
 
-      {/* Class Probability Distribution Breakdown */}
+      {/* Probability Distribution */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-sm font-bold text-slate-200 flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-brand-400" />
-            Class Probability Distribution (Softmax Outputs)
+          <h4 className="text-sm font-bold text-frost-white flex items-center gap-2 font-heading">
+            <TrendingUp className="w-4 h-4 text-neon-cyan" />
+            Softmax Distribution
           </h4>
-          <span className="text-[10px] text-slate-400 font-mono">10 Fashion Classes</span>
+          <span className="text-[10px] text-frost-muted font-mono">10 classes</span>
         </div>
 
-        <div className="space-y-2.5">
+        <div className="space-y-2">
           {sortedProbs.map(([className, prob], index) => {
             const pct = Math.round(prob * 1000) / 10;
             const isTop = index === 0;
-            const barGradient = isTop
-              ? colorGradient
-              : "from-slate-700 to-slate-800";
 
             return (
               <div key={className} className="flex flex-col gap-1">
                 <div className="flex items-center justify-between text-xs">
-                  <span className={`font-medium ${isTop ? "text-white font-bold" : "text-slate-400"}`}>
+                  <span className={`font-medium ${isTop ? "text-frost-white font-bold" : "text-frost-muted"}`}>
                     {className}
                   </span>
-                  <span className={`font-mono text-xs ${isTop ? "text-brand-300 font-bold" : "text-slate-400"}`}>
+                  <span className={`font-mono text-xs ${isTop ? "text-neon-lime font-bold" : "text-frost-muted"}`}>
                     {pct.toFixed(1)}%
                   </span>
                 </div>
 
-                {/* Animated bar */}
-                <div className="w-full h-2.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800/80 p-[1px]">
+                {/* Glassmorphic probability bar */}
+                <div className="w-full h-2 bg-surface-800 rounded-full overflow-hidden border border-white/[0.04]">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${pct}%` }}
                     transition={{ duration: 0.6, delay: index * 0.04 }}
-                    className={`h-full rounded-full bg-gradient-to-r ${barGradient}`}
+                    className={`h-full rounded-full ${
+                      isTop
+                        ? `bg-gradient-to-r ${classStyle.gradient}`
+                        : "bg-gradient-to-r from-frost-muted/30 to-frost-muted/20"
+                    }`}
                   />
                 </div>
               </div>

@@ -26,10 +26,10 @@ const SampleCard: React.FC<{
     for (let i = 0; i < sample.pixels.length; i++) {
       const val = sample.pixels[i];
       const idx = i * 4;
-      imgData.data[idx] = val; // R
-      imgData.data[idx + 1] = val; // G
-      imgData.data[idx + 2] = val; // B
-      imgData.data[idx + 3] = 255; // A
+      imgData.data[idx] = val;
+      imgData.data[idx + 1] = val;
+      imgData.data[idx + 2] = val;
+      imgData.data[idx + 3] = 255;
     }
     ctx.putImageData(imgData, 0, 0);
   }, [sample]);
@@ -38,30 +38,30 @@ const SampleCard: React.FC<{
     <button
       onClick={onSelect}
       disabled={isLoading}
-      className="group text-left p-3 rounded-2xl glass-panel-interactive flex flex-col justify-between h-full border border-slate-800/80 hover:border-brand-500/50 bg-slate-900/60 shadow-md hover:shadow-brand-500/10 transition-all duration-300"
+      className="group text-left p-3 rounded-xl glass-panel-interactive flex flex-col justify-between h-full border border-white/[0.04] bg-surface-800/40 shadow-md hover:shadow-neon-lime/10 transition-all duration-300"
     >
       <div className="flex items-center justify-between w-full gap-2 mb-2">
-        <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">
-          Class #{sample.classId}
+        <span className="text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-md bg-surface-700 text-frost-muted border border-white/[0.04] font-heading">
+          #{sample.classId}
         </span>
-        <ArrowUpRight className="w-3.5 h-3.5 text-slate-500 group-hover:text-brand-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+        <ArrowUpRight className="w-3 h-3 text-frost-muted group-hover:text-neon-lime group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
       </div>
 
       {/* 28x28 Matrix Preview */}
-      <div className="w-full h-24 bg-black rounded-xl border border-slate-800 flex items-center justify-center p-2 my-1 shadow-inner relative overflow-hidden group-hover:border-slate-700 transition-colors">
+      <div className="w-full h-20 bg-black rounded-lg border border-white/[0.04] flex items-center justify-center p-2 my-1 relative overflow-hidden group-hover:border-neon-lime/15 transition-colors">
         <canvas
           ref={canvasRef}
           width={28}
           height={28}
-          className="w-16 h-16 image-rendering-pixelated rounded shadow-lg group-hover:scale-110 transition-transform duration-300"
+          className="w-14 h-14 image-rendering-pixelated rounded group-hover:scale-110 transition-transform duration-300"
         />
       </div>
 
       <div className="mt-2">
-        <h4 className="text-xs font-bold text-slate-200 group-hover:text-brand-300 transition-colors">
+        <h4 className="text-xs font-bold text-frost-white group-hover:text-neon-lime transition-colors font-heading">
           {sample.label}
         </h4>
-        <p className="text-[10px] text-slate-400 line-clamp-1 mt-0.5 font-sans">
+        <p className="text-[9px] text-frost-muted line-clamp-1 mt-0.5">
           {sample.description}
         </p>
       </div>
@@ -74,12 +74,12 @@ export const SamplePicker: React.FC<SamplePickerProps> = ({ onSelectSample, isLo
     <div className="w-full">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-sm font-bold text-slate-200 flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-brand-400" />
-            Benchmark Fashion Samples
+          <h3 className="text-sm font-bold text-frost-white flex items-center gap-2 font-heading">
+            <Sparkles className="w-4 h-4 text-neon-magenta" />
+            Benchmark Samples
           </h3>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Click any canonical 28×28 matrix sample to test instant classification
+          <p className="text-xs text-frost-muted mt-0.5">
+            Click any 28×28 sample to classify instantly
           </p>
         </div>
       </div>

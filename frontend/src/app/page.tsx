@@ -17,7 +17,9 @@ import {
   Zap,
   Layers,
   Activity,
-  CheckCircle2,
+  Brain,
+  Shirt,
+  Image as ImageIcon,
 } from "lucide-react";
 
 export default function Home() {
@@ -66,91 +68,154 @@ export default function Home() {
     }
   };
 
+  const tabClasses = (tab: string) =>
+    `flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-300 font-heading ${
+      activeTab === tab
+        ? "bg-gradient-to-r from-neon-lime to-neon-cyan text-surface-900 shadow-lg shadow-neon-lime/15"
+        : "text-frost-muted hover:text-frost-white hover:bg-surface-700/60"
+    }`;
+
   return (
-    <div className="min-h-screen flex flex-col text-slate-100 selection:bg-brand-500 selection:text-white pb-16">
-      
+    <div className="min-h-screen flex flex-col text-frost-white selection:bg-neon-lime/30 selection:text-white pb-16">
+
       {/* Header Bar */}
       <Header onOpenSettings={() => setIsSettingsOpen(true)} />
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
-        
-        {/* Hero Banner */}
-        <div className="text-center max-w-3xl mx-auto space-y-3 pt-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold shadow-sm">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Interactive PyTorch ANN Visualizer & FastAPI Endpoint</span>
+
+        {/* ═══════════════ HERO SECTION with Photo ═══════════════ */}
+        <div className="relative overflow-hidden rounded-2xl glass-panel border border-white/[0.06] p-8 sm:p-12">
+          {/* Ambient background glow */}
+          <div className="absolute top-0 right-0 w-72 h-72 bg-neon-lime/[0.06] rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-56 h-56 bg-neon-magenta/[0.06] rounded-full blur-[80px] pointer-events-none" />
+
+          <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+
+            {/* Left: Text Content */}
+            <div className="space-y-5">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-neon-lime/10 border border-neon-lime/20 text-neon-lime text-[10px] font-bold tracking-widest uppercase font-heading">
+                <Brain className="w-3.5 h-3.5" />
+                <span>PyTorch Neural Network &bull; Live Inference</span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-frost-white font-heading leading-tight">
+                Classify Fashion Items with{" "}
+                <span className="text-gradient">Deep Learning</span>
+              </h2>
+              <p className="text-sm sm:text-base text-frost-gray max-w-lg leading-relaxed">
+                Draw clothing shapes, drag & drop fashion photographs, or evaluate
+                canonical 28&times;28 dataset samples — all classified in real time by a
+                multi-layer ANN running on FastAPI.
+              </p>
+              <div className="flex flex-wrap gap-3 pt-2">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-700/60 border border-white/[0.04] text-[11px] text-frost-muted">
+                  <Cpu className="w-3.5 h-3.5 text-neon-cyan" />
+                  <span>784-dim Tensor Input</span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-700/60 border border-white/[0.04] text-[11px] text-frost-muted">
+                  <Layers className="w-3.5 h-3.5 text-neon-magenta" />
+                  <span>10 Fashion Classes</span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-700/60 border border-white/[0.04] text-[11px] text-frost-muted">
+                  <Activity className="w-3.5 h-3.5 text-neon-lime" />
+                  <span>Softmax Probabilities</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Hero Image / Fashion Collage */}
+            <div className="relative flex justify-center lg:justify-end">
+              <div className="relative">
+                {/* Glowing ring behind */}
+                <div className="absolute -inset-4 rounded-2xl bg-gradient-to-tr from-neon-lime/20 via-neon-cyan/10 to-neon-magenta/20 blur-xl opacity-60 animate-pulse-slow" />
+
+                {/* Main hero image card */}
+                <div className="relative w-full max-w-sm glass-panel rounded-2xl border border-white/[0.08] p-4 shadow-2xl">
+                  <div className="grid grid-cols-3 gap-2">
+                    {/* Fashion item cards — simulated lookbook grid */}
+                    {[
+                      { icon: Shirt, label: "T-shirt", color: "text-neon-lime" },
+                      { icon: Sparkles, label: "Dress", color: "text-neon-magenta" },
+                      { icon: Zap, label: "Sneaker", color: "text-neon-cyan" },
+                    ].map((item, i) => (
+                      <div
+                        key={i}
+                        className="aspect-square rounded-xl bg-surface-800/80 border border-white/[0.06] flex flex-col items-center justify-center gap-2 hover:border-neon-lime/20 transition-all duration-300 group cursor-default"
+                      >
+                        <item.icon className={`w-8 h-8 ${item.color} group-hover:scale-110 transition-transform`} />
+                        <span className="text-[10px] font-bold text-frost-muted font-heading">{item.label}</span>
+                      </div>
+                    ))}
+                    {[
+                      { icon: ImageIcon, label: "Bag", color: "text-violet-400" },
+                      { icon: Layers, label: "Coat", color: "text-amber-400" },
+                      { icon: Grid, label: "Trouser", color: "text-sky-400" },
+                    ].map((item, i) => (
+                      <div
+                        key={i + 3}
+                        className="aspect-square rounded-xl bg-surface-800/80 border border-white/[0.06] flex flex-col items-center justify-center gap-2 hover:border-neon-cyan/20 transition-all duration-300 group cursor-default"
+                      >
+                        <item.icon className={`w-8 h-8 ${item.color} group-hover:scale-110 transition-transform`} />
+                        <span className="text-[10px] font-bold text-frost-muted font-heading">{item.label}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Terminal-style overlay badge */}
+                  <div className="mt-3 bg-black/50 rounded-lg p-3 border border-white/[0.04] font-mono text-[10px]">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="w-2 h-2 rounded-full bg-neon-lime"></span>
+                      <span className="w-2 h-2 rounded-full bg-neon-cyan"></span>
+                      <span className="w-2 h-2 rounded-full bg-neon-magenta"></span>
+                      <span className="text-frost-muted ml-1">model.inference()</span>
+                    </div>
+                    <p className="text-neon-lime">&#x3e; ANN loaded &bull; 10 classes &bull; ready</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white font-['Outfit']">
-            Classify Fashion Items with <span className="text-gradient">Deep Neural Networks</span>
-          </h2>
-          <p className="text-sm sm:text-base text-slate-400 font-sans max-w-2xl mx-auto">
-            Draw custom clothing shapes, drag & drop fashion photographs, or evaluate canonical 28×28 dataset samples in real time.
-          </p>
         </div>
 
-        {/* Input Mode Selector Tabs */}
+        {/* ═══════════════ INPUT MODE TABS ═══════════════ */}
         <div className="flex justify-center">
-          <div className="glass-panel p-1.5 rounded-2xl flex items-center gap-1 border border-slate-800 shadow-xl">
-            
-            <button
-              onClick={() => setActiveTab("draw")}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all ${
-                activeTab === "draw"
-                  ? "bg-gradient-to-r from-brand-600 to-accent-violet text-white shadow-lg shadow-brand-500/25"
-                  : "text-slate-400 hover:text-white hover:bg-slate-800/60"
-              }`}
-            >
+          <div className="glass-panel p-1.5 rounded-xl flex items-center gap-1 border border-white/[0.04] shadow-xl">
+            <button onClick={() => setActiveTab("draw")} className={tabClasses("draw")}>
               <PenTool className="w-4 h-4" />
-              <span>Interactive Draw Pad</span>
+              <span>Draw Pad</span>
             </button>
 
-            <button
-              onClick={() => setActiveTab("upload")}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all ${
-                activeTab === "upload"
-                  ? "bg-gradient-to-r from-brand-600 to-accent-violet text-white shadow-lg shadow-brand-500/25"
-                  : "text-slate-400 hover:text-white hover:bg-slate-800/60"
-              }`}
-            >
+            <button onClick={() => setActiveTab("upload")} className={tabClasses("upload")}>
               <Upload className="w-4 h-4" />
-              <span>Upload Image</span>
+              <span>Upload Photo</span>
             </button>
 
-            <button
-              onClick={() => setActiveTab("samples")}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all ${
-                activeTab === "samples"
-                  ? "bg-gradient-to-r from-brand-600 to-accent-violet text-white shadow-lg shadow-brand-500/25"
-                  : "text-slate-400 hover:text-white hover:bg-slate-800/60"
-              }`}
-            >
+            <button onClick={() => setActiveTab("samples")} className={tabClasses("samples")}>
               <Grid className="w-4 h-4" />
-              <span>Benchmark Samples</span>
+              <span>Samples</span>
             </button>
-
           </div>
         </div>
 
         {/* Error Banner */}
         {errorMessage && (
-          <div className="max-w-3xl mx-auto p-4 rounded-2xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs font-semibold flex items-center justify-between shadow-xl">
+          <div className="max-w-3xl mx-auto p-4 rounded-xl bg-red-950/40 border border-red-500/20 text-red-300 text-xs font-semibold flex items-center justify-between shadow-xl">
             <div className="flex items-center gap-2">
               <span className="text-base">⚠️</span>
               <span>{errorMessage}</span>
             </div>
             <button
               onClick={() => setErrorMessage(null)}
-              className="px-3 py-1 bg-rose-900/60 rounded-lg hover:bg-rose-800 text-rose-200 transition-colors"
+              className="px-3 py-1 bg-red-900/40 rounded-lg hover:bg-red-800/60 text-red-200 transition-colors text-xs"
             >
               Dismiss
             </button>
           </div>
         )}
 
-        {/* Workspace Layout Grid */}
+        {/* ═══════════════ WORKSPACE LAYOUT ═══════════════ */}
         {activeTab === "samples" ? (
-          /* Full Width Layout for Benchmark Samples */
           <div className="space-y-8">
             <SamplePicker onSelectSample={handleSelectSample} isLoading={isLoading} />
             <div className="max-w-2xl mx-auto">
@@ -158,34 +223,33 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          /* 2-Column Split Grid for Draw / Upload */
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            {/* Left Column: Interactive Input Studio */}
-            <div className="lg:col-span-5 glass-panel rounded-3xl p-6 sm:p-8 border border-slate-800/80 shadow-2xl flex flex-col items-center">
-              <div className="w-full flex items-center justify-between pb-6 mb-6 border-b border-slate-800">
+
+            {/* Left: Input Studio */}
+            <div className="lg:col-span-5 glass-panel rounded-2xl p-6 sm:p-8 border border-white/[0.06] shadow-2xl flex flex-col items-center">
+              <div className="w-full flex items-center justify-between pb-5 mb-5 border-b border-white/[0.06]">
                 <div>
-                  <h3 className="text-base font-bold text-white flex items-center gap-2 font-['Outfit']">
+                  <h3 className="text-sm font-bold text-frost-white flex items-center gap-2 font-heading">
                     {activeTab === "draw" ? (
                       <>
-                        <PenTool className="w-4 h-4 text-brand-400" />
+                        <PenTool className="w-4 h-4 text-neon-lime" />
                         Draw Studio
                       </>
                     ) : (
                       <>
-                        <Upload className="w-4 h-4 text-pink-400" />
-                        Image Upload Studio
+                        <Upload className="w-4 h-4 text-neon-magenta" />
+                        Upload Studio
                       </>
                     )}
                   </h3>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="text-[11px] text-frost-muted mt-0.5">
                     {activeTab === "draw"
                       ? "Draw clothing items with custom brush sizes"
-                      : "Drop any fashion photo to downsample to 28x28"}
+                      : "Drop any fashion photo — auto-resized to 28×28"}
                   </p>
                 </div>
-                <span className="px-2.5 py-1 bg-slate-900 border border-slate-800 text-[10px] font-mono text-slate-400 rounded-lg">
-                  784 Float Tensor
+                <span className="px-2.5 py-1 bg-surface-800 border border-white/[0.04] text-[9px] font-mono text-frost-muted rounded-lg">
+                  784 float
                 </span>
               </div>
 
@@ -196,7 +260,7 @@ export default function Home() {
               )}
             </div>
 
-            {/* Right Column: Animated Inference Results */}
+            {/* Right: Results */}
             <div className="lg:col-span-7">
               <PredictionCard prediction={prediction} isLoading={isLoading} />
             </div>
@@ -204,40 +268,40 @@ export default function Home() {
           </div>
         )}
 
-        {/* Feature Spec Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8">
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800/80 flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-brand-500/10 text-brand-400 border border-brand-500/20">
+        {/* ═══════════════ FEATURE CARDS ═══════════════ */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
+          <div className="glass-panel p-5 rounded-xl border border-white/[0.06] flex items-start gap-4 group hover:border-neon-lime/15 transition-all duration-300">
+            <div className="p-3 rounded-xl bg-neon-lime/10 text-neon-lime border border-neon-lime/15 group-hover:shadow-lg group-hover:shadow-neon-lime/10 transition-shadow">
               <Cpu className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider">ANN Architecture</h4>
-              <p className="text-xs text-slate-400 mt-1">
+              <h4 className="text-xs font-bold text-frost-white uppercase tracking-wider font-heading">ANN Architecture</h4>
+              <p className="text-[11px] text-frost-muted mt-1 leading-relaxed">
                 Multi-layer Perceptron with BatchNorm1d, ReLU, Dropout, and Softmax output.
               </p>
             </div>
           </div>
 
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800/80 flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-accent-pink/10 text-pink-400 border border-accent-pink/20">
+          <div className="glass-panel p-5 rounded-xl border border-white/[0.06] flex items-start gap-4 group hover:border-neon-magenta/15 transition-all duration-300">
+            <div className="p-3 rounded-xl bg-neon-magenta/10 text-neon-magenta border border-neon-magenta/15 group-hover:shadow-lg group-hover:shadow-neon-magenta/10 transition-shadow">
               <Layers className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider">10 Fashion Classes</h4>
-              <p className="text-xs text-slate-400 mt-1">
+              <h4 className="text-xs font-bold text-frost-white uppercase tracking-wider font-heading">10 Fashion Classes</h4>
+              <p className="text-[11px] text-frost-muted mt-1 leading-relaxed">
                 T-shirt, Trouser, Pullover, Dress, Coat, Sandal, Shirt, Sneaker, Bag, Ankle boot.
               </p>
             </div>
           </div>
 
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800/80 flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-accent-cyan/10 text-cyan-400 border border-accent-cyan/20">
+          <div className="glass-panel p-5 rounded-xl border border-white/[0.06] flex items-start gap-4 group hover:border-neon-cyan/15 transition-all duration-300">
+            <div className="p-3 rounded-xl bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/15 group-hover:shadow-lg group-hover:shadow-neon-cyan/10 transition-shadow">
               <Activity className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-white uppercase tracking-wider">FastAPI Backend</h4>
-              <p className="text-xs text-slate-400 mt-1">
-                Containerized REST API with <code className="text-brand-300">/health</code>, <code className="text-brand-300">/predict</code>, & <code className="text-brand-300">/predict-image</code>.
+              <h4 className="text-xs font-bold text-frost-white uppercase tracking-wider font-heading">FastAPI Backend</h4>
+              <p className="text-[11px] text-frost-muted mt-1 leading-relaxed">
+                Containerized REST API with <code className="text-neon-lime">/health</code>, <code className="text-neon-lime">/predict</code>, & <code className="text-neon-lime">/predict-image</code>.
               </p>
             </div>
           </div>
@@ -245,11 +309,11 @@ export default function Home() {
 
       </main>
 
-      {/* Footer Credit */}
-      <footer className="w-full text-center py-6 text-xs text-slate-400 border-t border-slate-800/60 mt-12">
+      {/* Footer */}
+      <footer className="w-full text-center py-6 text-xs text-frost-muted border-t border-white/[0.04] mt-12">
         <p className="flex items-center justify-center gap-1.5 font-medium">
           <span>Fashion-MNIST AI Studio</span>
-          <span>•</span>
+          <span className="text-neon-lime">•</span>
           <span>Developed & Deployed by <strong className="text-gradient">Amaan Chauhan</strong></span>
         </p>
       </footer>
